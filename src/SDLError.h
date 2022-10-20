@@ -16,19 +16,24 @@ namespace Where1::SDL_Utilities {
 			tmp += ' ';
 			tmp += SDL_GetError(); // If this was all on one line it would do pointer addition because C++
 
-			message = new char[tmp.length() + 1];
-			strncpy(message, tmp.c_str(), tmp.length() + 1);
-			message[tmp.length()] = '\0'; // Safety first
+			message = std::move(tmp);
+		}
+
+		explicit SDLError(std::string error_message)
+		{
+			error_message += " ";
+			error_message += SDL_GetError();
+			message = std::move(error_message);
 		}
 
 		SDLError()
 				: SDLError("") {
 		}
 
-		char *message;
+		std::string message;
 
 		const char *what() const noexcept override {
-			return message;
+			return message.c_str();
 		}
 	};
 }

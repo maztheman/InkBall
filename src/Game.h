@@ -45,9 +45,6 @@ namespace Where1::InkBall {
 
 		SDL_Texture &get_texture(std::string name);
 
-		static const unsigned int TOP_BAR_HEIGHT = 30;
-		static const unsigned int HEIGHT = 608 + TOP_BAR_HEIGHT;
-		static const unsigned int WIDTH = 480;
 
 		std::string get_asset_path_prefix();
 		std::string get_level_path_prefix();

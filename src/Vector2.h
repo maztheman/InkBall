@@ -1,6 +1,4 @@
-
-#ifndef INKBALL_VECTOR2_H
-#define INKBALL_VECTOR2_H
+#pragma once
 
 #include <cmath>
 
@@ -75,4 +73,4 @@ namespace Where1::Geometry {
 	}
 }
 
-#endif //INKBALL_VECTOR2_H
+using vec2d = Where1::Geometry::Vector2<double>;

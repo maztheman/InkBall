@@ -7,19 +7,27 @@
 #include "EscapeMenu.h"
 #include "TextScreenLevel.h"
 #include "LevelSelectMenu.h"
+#include "Constants.h"
+
+#include "AssetLoader.h"
 
 #include <SDL2/SDL_ttf.h>
 
-namespace Where1::InkBall {
-	void Game::play() {
+namespace Where1::InkBall 
+{
+	void Game::play() 
+	{
 		unsigned long long now = SDL_GetPerformanceCounter();
 		unsigned long long last = now;
 
-		while (!should_quit) {
+		SDL_Utilities::Assets().load();
+
+		while (!should_quit) 
+		{
 			SDL_Event event;
-			while (!should_quit && SDL_PollEvent(&event)) {
+			while (!should_quit && SDL_PollEvent(&event)) 
+			{
 				handle_event(event);
-				now = SDL_GetPerformanceCounter();
 			}
 
 			last = now;
@@ -28,12 +36,14 @@ namespace Where1::InkBall {
 
 			const double max_timestep = 1 / 60.0;
 
-			while (delta_t > 1 / 60.0) {
+			while (delta_t > 1 / 60.0) 
+			{
 				delta_t -= max_timestep;
 				level_stack.top()->update(max_timestep);
 			}
 
-			if (delta_t > 0) {
+			if (delta_t > 0) 
+			{
 				level_stack.top()->update(delta_t);
 			}
 
@@ -41,13 +51,17 @@ namespace Where1::InkBall {
 
 			SDL_RenderPresent(renderer.get());
 		}
+
+		SDL_Utilities::Assets().unload();
 	}
 
-	void Game::quit() {
+	void Game::quit() 
+	{
 		should_quit = true;
 	}
 
-	void Game::handle_event(SDL_Event &event) {
+	void Game::handle_event(SDL_Event &event) 
+	{
 		switch (event.type) {
 			case SDL_QUIT:
 				quit();
@@ -76,7 +90,7 @@ namespace Where1::InkBall {
 
 	Game::Game() {
 		window = std::unique_ptr<SDL_Window, SDL_Utilities::SDLWindowDeleter>(
-				SDL_CreateWindow("InkBall", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT,
+				SDL_CreateWindow("InkBall", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, Constants::GAME_WIDTH, Constants::GAME_HEIGHT,
 								 SDL_WINDOW_OPENGL));
 
 

@@ -1,6 +1,8 @@
 
 #include "Drawing.h"
 
+#include "AssetLoader.h"
+
 #include <SDL2/SDL_ttf.h>
 
 namespace Where1::SDL_Utilities {
@@ -44,44 +46,42 @@ namespace Where1::SDL_Utilities {
 		DrawLine(renderer, line.p1, line.p2, thickness);
 	}
 
-	void DrawLine(SDL_Renderer *renderer, Geometry::Vector2<double> p1, Geometry::Vector2<double> p2, int thickness) {
+	void DrawLine(SDL_Renderer *renderer, vec2d p1, vec2d p2, int thickness) {
 		int medium = thickness / 2;
 
-		Geometry::Vector2<double> displacement = (p2 - p1);
-		Geometry::Vector2<double> normal_vector = displacement.get_normal_vector().get_normalized();
+		vec2d displacement = (p2 - p1);
+		vec2d normal_vector = displacement.get_normal_vector().get_normalized();
 
 		for(int i = -medium; i <= medium; i++){
-			Geometry::Vector2<double> pt1 = p1 + (double)i * normal_vector;
-			Geometry::Vector2<double> pt2 = p2 + (double)i * normal_vector;
+			vec2d pt1 = p1 + (double)i * normal_vector;
+			vec2d pt2 = p2 + (double)i * normal_vector;
 
 			SDL_RenderDrawLine(renderer, pt1.x, pt1.y, pt2.x, pt2.y);
 		}
 	}
 
-	void DrawLines(SDL_Renderer *renderer, std::vector<Geometry::Vector2<double>> points) {
-		SDL_Point *point_array = new SDL_Point[points.size()];
+	void DrawLines(SDL_Renderer *renderer, const std::vector<vec2d>& points) 
+	{
+		//could use some sort of allocator that remembers every frame
+		std::vector<SDL_Point> pointArray(points.size());
 
-		for(int i = 0; i < points.size(); i++){
-			point_array[i].x = (int)points[i].x;
-			point_array[i].y = (int)points[i].y;
+		for(int i = 0; i < points.size(); i++)
+		{
+			pointArray[i].x = (int)points[i].x;
+			pointArray[i].y = (int)points[i].y;
 		}
 
-		SDL_RenderDrawLines(renderer, point_array, points.size());
-		delete[] point_array;
+		SDL_RenderDrawLines(renderer, pointArray.data(), points.size());
 	}
 
-	void WriteText(SDL_Renderer *renderer, Geometry::Vector2<double> position, std::string text, int size, uint8_t red, uint8_t blue, uint8_t green) {
-		TTF_Font *sans = TTF_OpenFont("assets/LiberationSans-Regular.ttf", size);
-
-		if(sans == nullptr){
-			throw SDLError("Could not open font:");
-		}
+	void WriteText(SDL_Renderer *renderer, vec2d position, std::string_view text, int size, uint8_t red, uint8_t blue, uint8_t green) 
+	{
+		TTF_Font *sans = Assets().getFontForSize(size);
 
 		SDL_Color color = {red, green, blue};
 
-		SDL_Surface *surface = TTF_RenderText_Solid(sans, text.c_str(), color);
+		SDL_Surface *surface = TTF_RenderText_Solid(sans, text.data(), color);
 
-		TTF_CloseFont(sans);
 		sans = nullptr;
 
 		if(surface == nullptr){
@@ -110,16 +110,13 @@ namespace Where1::SDL_Utilities {
 		texture = nullptr;
 	}
 
-	std::pair<int, int> GetStringSize(std::string text, int size) {
-		TTF_Font *sans = TTF_OpenFont("assets/LiberationSans-Regular.ttf", size);
-
-		if(sans == nullptr){
-			throw SDLError("Could not open font:");
-		}
+	std::pair<int, int> GetStringSize(std::string_view text, int size) 
+	{
+		TTF_Font *sans = Assets().getFontForSize(size);
 
 		int w, h;
 
-		TTF_SizeText(sans, text.c_str(), &w, &h);
+		TTF_SizeText(sans, text.data(), &w, &h);
 
 		return std::make_pair(w, h);
 	}

@@ -3,6 +3,7 @@
 #include "PlayableLevel.h"
 
 #include "Color.h"
+#include "Constants.h"
 
 namespace Where1::InkBall {
 
@@ -33,7 +34,7 @@ namespace Where1::InkBall {
 
 		std::stringstream score_text_stream;
 		score_text_stream << "Score: " << score;
-		SDL_Utilities::WriteText(renderer, {0, 0}, score_text_stream.str(), Game::TOP_BAR_HEIGHT - 4, 0, 0, 0);
+		SDL_Utilities::WriteText(renderer, {0, 0}, score_text_stream.str(), Constants::PLAYABLE_LEVEL_FONT_SIZE, 0, 0, 0);
 	}
 
 	void PlayableLevel::update(double timestep) {

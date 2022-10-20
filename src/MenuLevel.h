@@ -9,7 +9,8 @@
 
 
 namespace Where1::InkBall {
-	class MenuLevel : public Level {
+	class MenuLevel : public Level 
+	{
 	public:
 		virtual void draw(SDL_Renderer *renderer) override;
 
@@ -25,8 +26,6 @@ namespace Where1::InkBall {
 		virtual Game &get_game() = 0;
 
 	private:
-		const int PADDING = 10;
-		const int TEXT_SIZE = 30;
 
 		SDL_Rect get_bounding_rect(MenuItem &item, int index);
 	};
